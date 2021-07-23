@@ -1,3 +1,4 @@
+from typing import Optional
 from enum import Enum
 
 from fastapi import FastAPI
@@ -34,3 +35,13 @@ async def get_model(model_name: ModelName):
 @app.get("/files/{file_path:path}")
 async def read_file(file_path: str):
     return {"file_path": file_path}
+
+
+@app.get("/items")
+async def get_item(type: int = 0, manufacturer: str = 'Microsoft', optional_param: Optional[str] = None):
+    return {'type': type, 'manufacturer': manufacturer, 'optional_param': optional_param}
+
+@app.get("/boolcheck/")
+async def get_bool(a_bool: bool = False):
+    return {'a_bool': a_bool}
+    
