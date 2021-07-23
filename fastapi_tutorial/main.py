@@ -1,6 +1,7 @@
 from typing import Optional
 from enum import Enum
 
+from pydantic import BaseModel
 from fastapi import FastAPI
 
 
@@ -8,6 +9,12 @@ class ModelName(str, Enum):
     alexnet = "alexnet"
     resnet = "resnet"
     lenet = "lenet"
+
+class Item(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    tax: Optional[float] = None
 
 
 app = FastAPI()
@@ -44,4 +51,23 @@ async def get_item(type: int = 0, manufacturer: str = 'Microsoft', optional_para
 @app.get("/boolcheck/")
 async def get_bool(a_bool: bool = False):
     return {'a_bool': a_bool}
-    
+
+@app.post("/items/")
+async def create_item(item: Item):
+    item_dict = item.dict()
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item, q: Optional[str] = None):
+    result = {"item_id": item_id, **item.dict()}
+    if q:
+        result.update({"q": q})
+    return result
+
+# The function parameters will be recognized as follows:
+# If the parameter is also declared in the path, it will be used as a path parameter.
+# If the parameter is of a singular type (like int, float, str, bool, etc) it will be interpreted as a query parameter.
+# If the parameter is declared to be of the type of a Pydantic model, it will be interpreted as a request body.
