@@ -2,7 +2,7 @@ from typing import Optional
 from enum import Enum
 
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 
 class ModelName(str, Enum):
@@ -44,13 +44,29 @@ async def read_file(file_path: str):
     return {"file_path": file_path}
 
 
-@app.get("/items")
-async def get_item(type: int = 0, manufacturer: str = 'Microsoft', optional_param: Optional[str] = None):
-    return {'type': type, 'manufacturer': manufacturer, 'optional_param': optional_param}
+@app.get("/items/")
+async def read_items(
+    q: Optional[str] = Query(
+        None,
+        alias="item-query",
+        title="Query string",
+        description="Query string for the items to search in the database that have a good match",
+        min_length=3,
+        max_length=50,
+        regex="^fixedquery$",
+        deprecated=True,
+    )
+):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
+
 
 @app.get("/boolcheck/")
 async def get_bool(a_bool: bool = False):
     return {'a_bool': a_bool}
+
 
 @app.post("/items/")
 async def create_item(item: Item):
@@ -59,6 +75,7 @@ async def create_item(item: Item):
         price_with_tax = item.price + item.tax
         item_dict.update({"price_with_tax": price_with_tax})
     return item_dict
+
 
 @app.put("/items/{item_id}")
 async def update_item(item_id: int, item: Item, q: Optional[str] = None):
