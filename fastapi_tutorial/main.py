@@ -12,10 +12,20 @@ class Image(BaseModel):
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
-    price: float = Field(gt=0)
+    price: float = Field(gt=0, example=110)
     tax: Optional[float] = None
     tags: Set[str] = set()
     image: Optional[List[Image]] = None
+    
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "name": "Foo",
+    #             "description": "A very nice Item",
+    #             "price": 35.4,
+    #             "tax": 3.2,
+    #         }
+    #     }
 
 
 app = FastAPI()
@@ -34,7 +44,20 @@ async def read_items(
         regex="^fixedquery$",
         deprecated=True,
     ),
-    body: Item = Body(..., embed=True)
+    body: Item = Body(..., 
+        examples={
+            "normal": {
+                "summary": "A summary",
+                "description": "A normal example",
+                "value": {
+                    "name": "Foo",
+                    "description": "A very nice Item",
+                    "price": 35.4,
+                    "tax": 3.2,
+                }
+            }
+        }   
+    )
 ):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
