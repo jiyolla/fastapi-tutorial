@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Set, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
-from fastapi import FastAPI, Query, Path, Body
+from fastapi import FastAPI, Query, Path, Body, Cookie
 
 
 class Image(BaseModel):
@@ -59,7 +59,8 @@ async def read_items(
                 }
             }
         }   
-    )
+    ),
+    ads_id: Optional[str] = Cookie(None)
 ):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
