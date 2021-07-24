@@ -1,13 +1,13 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi import FastAPI, Query, Path, Body
 
 
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
-    price: float
+    price: float = Field(gt=0)
     tax: Optional[float] = None
 
 
