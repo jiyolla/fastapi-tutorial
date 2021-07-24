@@ -2,7 +2,7 @@ from typing import Optional
 from enum import Enum
 
 from pydantic import BaseModel
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 
 
 class ModelName(str, Enum):
@@ -44,8 +44,9 @@ async def read_file(file_path: str):
     return {"file_path": file_path}
 
 
-@app.get("/items/")
+@app.get("/items/{items_id}")
 async def read_items(
+    items_id: int = Path(..., title="Some title", description="Should be positive", gt=0),
     q: Optional[str] = Query(
         None,
         alias="item-query",
