@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Set, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
@@ -16,6 +17,7 @@ class Item(BaseModel):
     tax: Optional[float] = None
     tags: Set[str] = set()
     image: Optional[List[Image]] = None
+    expire_by: Optional[datetime] = None
     
     # class Config:
     #     schema_extra = {
