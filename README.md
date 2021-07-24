@@ -12,6 +12,9 @@ Tag name follows the URI(eg. 'https://fastapi.tiangolo.com/tutorial/first-steps/
 ### 'main' branch
 The 'main' branch refers to the latest follow up.
 
+### **UPDATE**
+I originally planned to tag all the steps, but I soon found it quite meaningless. From this step([Header Parameters](https://fastapi.tiangolo.com/tutorial/header-params/)), I would rather compress multiple steps into one giving a proper tag with my best effort.
+
 
 ## Usage
 
